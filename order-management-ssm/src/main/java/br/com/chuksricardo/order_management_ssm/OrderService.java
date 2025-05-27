@@ -17,11 +17,9 @@ public class OrderService {
   public void newOrder(){
     initOrderSaga();
     validadeOrder();
-    payOrder();
-    shipOrder();
   }
 
-  private void validadeOrder(){
+   private void validadeOrder(){
     System.out.println("Validating order");
     stateMachine.sendEvent(Mono.just(
       MessageBuilder.withPayload(OrderEvents.VALIDATE).build()))
@@ -29,7 +27,7 @@ public class OrderService {
       System.out.println("Final state: " + stateMachine.getState().getId());
   }
 
-  private void payOrder(){
+   void payOrder(){
     System.out.println("Paying order");
     stateMachine.sendEvent(Mono.just(
       MessageBuilder.withPayload(OrderEvents.PAY).build()))
@@ -37,7 +35,7 @@ public class OrderService {
       System.out.println("Final state: " + stateMachine.getState().getId());
   }
 
-  private void shipOrder(){
+  void shipOrder(){
     System.out.println("Shipping order");
     stateMachine.sendEvent(Mono.just(
       MessageBuilder.withPayload(OrderEvents.SHIP).build()))
@@ -45,7 +43,7 @@ public class OrderService {
       System.out.println("Final state: " + stateMachine.getState().getId());
   }
 
-  private void completeOrder(){
+  void completeOrder(){
     System.out.println("Completing order");
     stateMachine.sendEvent(Mono.just(
       MessageBuilder.withPayload(OrderEvents.COMPLETE).build()))
