@@ -7,8 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.action.Action;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
+import org.springframework.statemachine.config.builders.StateMachineConfigurationConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
+import org.springframework.statemachine.listener.StateMachineListener;
+import org.springframework.statemachine.listener.StateMachineListenerAdapter;
+import org.springframework.statemachine.transition.Transition;
 
 @Configuration
 @EnableStateMachineFactory
@@ -43,6 +47,11 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 
   }
 
+  @Override
+  public void configure(StateMachineConfigurationConfigurer<OrderState, OrderEvents> config) throws Exception{
+    config.withConfiguration().listener(stateMachineListener());
+  }
+
   @Bean
   Action<OrderState, OrderEvents> shipOrderAction() {
     return contex -> {
@@ -63,4 +72,14 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
       System.out.println("Validating Order");
     };
   }
+
+    @Bean
+    StateMachineListener<OrderState, OrderEvents> stateMachineListener() {
+        return new StateMachineListenerAdapter<>(){
+          @Override
+          public void transition(Transition<OrderState, OrderEvents> transition){
+            System.out.println("Transitioning from" + transition.getSource().getId()+" to " + transition.getTarget().getId());
+          }
+        };
+    }
 }
